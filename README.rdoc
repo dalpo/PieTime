@@ -1,0 +1,5 @@
+= CakePHP PieTime
+ 
+CakePHP simple date/time localization
+
+
