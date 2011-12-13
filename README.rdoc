@@ -1,4 +1,5 @@
 = CakePHP PieTime
+
 CakePHP simple date/time localization
 
 
@@ -9,7 +10,35 @@ CakePHP simple date/time localization
   git submodule add git@github.com:dalpo/PieTime.git app/Plugin/PieTime
   git submodule init && git submodule update
 
-...
+==== Bootstrap
+
+Add this to load correctly the plugin under app/config/bootstrap.php
+
+  CakePlugin::load('PieTime');
+
+==== Setup AppController
+
+  class AppController extends Controller {
+  
+    public $helpers = array('Html', 'Form', 'Session', 'PieTime.L10n');
+
+    ...
+  
+  }
+
+==== Setup AppModel
+
+  class FooModel extends Model {
+  
+    public $actsAs = array('PieTime.L10nField');
+
+    ...
+  
+  }
+
+== Usage
+
+todo...
 
 === Capistrano
 If you use submodules with capistrano you should put this conf under deploy.rb
