@@ -1,5 +1,18 @@
 = CakePHP PieTime
- 
 CakePHP simple date/time localization
 
+
+== Installation:
+
+==== Add a git submodule
+
+  git submodule add git@github.com:dalpo/PieTime.git app/Plugin/PieTime
+  git submodule init && git submodule update
+
+...
+
+=== Capistrano
+If you use submodules with capistrano you should put this conf under deploy.rb
+
+  set :git_enable_submodules, 1
 
