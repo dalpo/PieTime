@@ -5,7 +5,7 @@ App::uses('L10nUtility', 'PieTime.Lib');
 
 class L10nHelper extends AppHelper {
 
-  public function localize($timestamp = time(), $format = 'time.default') {
+  public function localize($timestamp = null, $format = 'time.default') {
     return L10nUtility::localize($timestamp, $format);
   }
 
