@@ -27,6 +27,7 @@ class L10nDatetimeBehavior extends ModelBehavior {
     $this->_options[$Model->alias] = array_merge($this->_defaultOptions, $options);
     $this->_Model =& $Model;
     $this->__connection =& ConnectionManager::getDataSource($this->_Model->useDbConfig);
+    $this->__l10nFields[$this->_Model->alias] = array();
 
     foreach($this->_Model->getColumnTypes() as $field => $dataType) {
       if(in_array($dataType, $this->_l10nDataTypes) && !in_array($field, $this->_ignoredFields)) {
@@ -73,9 +74,6 @@ class L10nDatetimeBehavior extends ModelBehavior {
 
     foreach($this->getL10nFields() as $field => $dataType) {
       //delocalize method!
-
-      // $this->__beforeSaveFields[$this->_Model->alias][$field] = $this->_Model->data[$this->_Model->alias][$field];
-
       $this->_Model->data[$this->_Model->alias][$field] = $this->toServerTime(
         $field,
         $this->_Model->data[$this->_Model->alias][$field], 
