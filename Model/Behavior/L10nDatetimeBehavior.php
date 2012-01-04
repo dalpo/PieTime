@@ -74,11 +74,13 @@ class L10nDatetimeBehavior extends ModelBehavior {
 
     foreach($this->getL10nFields() as $field => $dataType) {
       //delocalize method!
-      $this->_Model->data[$this->_Model->alias][$field] = $this->toServerTime(
-        $field,
-        $this->_Model->data[$this->_Model->alias][$field], 
-        $dataType
-      );
+      if(isset($this->_Model->data[$this->_Model->alias][$field])) {
+        $this->_Model->data[$this->_Model->alias][$field] = $this->toServerTime(
+          $field,
+          $this->_Model->data[$this->_Model->alias][$field], 
+          $dataType
+        );  
+      }
     }
 
     parent::beforeSave($Model);
