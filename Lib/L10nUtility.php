@@ -29,6 +29,7 @@ class L10nUtility {
   }
 
   static public function localize($timestamp = null, $format = 'time.default') {
+
     $mktime = self::makeTime($timestamp);
     
     if($mktime) {

@@ -26,19 +26,22 @@ class L10nDatetimeBehavior extends ModelBehavior {
   public function setup(Model &$Model, $options = array()) {
     $this->_options[$Model->alias] = array_merge($this->_defaultOptions, $options);
     $this->_Model =& $Model;
-    $this->__connection =& ConnectionManager::getDataSource($this->_Model->useDbConfig);
     $this->__l10nFields[$this->_Model->alias] = array();
 
-    foreach($this->_Model->getColumnTypes() as $field => $dataType) {
-      if(in_array($dataType, $this->_l10nDataTypes) && !in_array($field, $this->_ignoredFields)) {
-        $this->__l10nFields[$this->_Model->alias][$field] = $dataType;
-      }
-    }
+    if($Model->useTable) {
+      $this->__connection =& ConnectionManager::getDataSource($this->_Model->useDbConfig);
 
-    foreach($this->__connection->columns as $dataType => $info) {
-      if(isset($info['format'])) {
-        $this->__dataTypes[$this->_Model->alias][$dataType] = $info['format'];
+      foreach($this->_Model->getColumnTypes() as $field => $dataType) {
+        if(in_array($dataType, $this->_l10nDataTypes) && !in_array($field, $this->_ignoredFields)) {
+          $this->__l10nFields[$this->_Model->alias][$field] = $dataType;
+        }
       }
+
+      foreach($this->__connection->columns as $dataType => $info) {
+        if(isset($info['format'])) {
+          $this->__dataTypes[$this->_Model->alias][$dataType] = $info['format'];
+        }
+      }      
     }
   }
 
@@ -68,6 +71,33 @@ class L10nDatetimeBehavior extends ModelBehavior {
   }
 
   
+  public function beforeValidate(Model &$Model) {
+    $this->_Model =& $Model;
+
+    $fieldList = $this->getL10nFields();
+
+    $this->_Model->Behaviors->disable('L10nDatetime');
+    $isValid = $this->_Model->validates();
+    $this->_Model->Behaviors->enable('L10nDatetime');
+
+    if(!$isValid) {
+
+      foreach($fieldList as $field => $dataType) {
+        //delocalize method!
+        if(isset($this->_Model->data[$this->_Model->alias][$field])) {
+          $this->_Model->data[$this->_Model->alias][$field] = $this->toServerTime(
+            $field,
+            $this->_Model->data[$this->_Model->alias][$field], 
+            $dataType
+          );
+        }
+      }
+      return false;
+    }
+
+    return true;
+  }
+
   public function beforeSave(Model &$Model) {
 
     $this->_Model =& $Model;
